@@ -15,19 +15,20 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Perceptron {
     
-    private Integer [] inputs;
+    private Float [] inputs;
     private Float [] weights;
-    private float bias = ThreadLocalRandom.current().nextFloat();
+    private float bias =ThreadLocalRandom.current().nextFloat();
 
     public Perceptron(int input_size) {
-        this.inputs = new Integer[input_size];
+        this.inputs = new Float[input_size];
         this.weights = new Float[input_size];
         for (int i = 0; i < weights.length; i++) {
-            weights[i] = ThreadLocalRandom.current().nextFloat();
+            weights[i] = Utils.randomNegativePositive();
+            System.out.println("random weight["+i+"] = "+weights[i]);
         }
     }
     
-    public void setInputs(Integer ... ins) throws Exception{
+    public void setInputs(Float ... ins) throws Exception{
         if(ins.length != inputs.length){
             throw new Exception("Lenghts Mismatch!");
         }
@@ -37,14 +38,32 @@ public class Perceptron {
     }
     
     
-    public float activate(){
+//    public float activate(){
+//        
+//        float sum = 0;
+//        for (int i = 0; i < inputs.length; i++) {
+//            sum+=(this.inputs[i] * this.weights[i]);
+//        }
+//        sum+=bias;
+//        System.out.println("BIAS = "+bias);
+//        System.out.println("SUM = "+sum);
+//        return (float) (1f/(1f+ Math.exp(-sum)));
+//        
+//    }
+    
+        public float activate(){
         
-        float sum = 0;
+        float potenzialeAttivazione = 0;
         for (int i = 0; i < inputs.length; i++) {
-            sum+=(this.inputs[i] * this.weights[i]);
+            potenzialeAttivazione+=(this.inputs[i] * this.weights[i]);
         }
-        sum+=bias;
-        return (float) (1f/(1f+ Math.exp(-sum)));
+        
+        System.out.println("BIAS = "+bias);
+        System.out.println("Potenziale di Attivazione = "+potenzialeAttivazione);
+//        sum = 0.2f;
+//        float result = (float) (1f/(1f+ Math.exp(-sum)));
+
+        return potenzialeAttivazione >= 0 ?  1 : 0; 
         
     }
     

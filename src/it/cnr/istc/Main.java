@@ -5,6 +5,9 @@
  */
 package it.cnr.istc;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Luca Coraci <luca.coraci@istc.cnr.it> ISTC-CNR
@@ -15,7 +18,18 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("PERCEPTRON TEST");
+        try {
+            System.out.println("PERCEPTRON TEST");
+            
+            Perceptron p = new Perceptron(3);
+            p.setInputs(0.2f, 0.3f, 0.9f);
+            float result = p.activate();
+            System.out.println("RESULT = "+result);
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
     }
     
 }
