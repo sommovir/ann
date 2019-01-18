@@ -23,7 +23,7 @@ public class Main {
             
             Perceptron p = new Perceptron(3);
             p.setInputs(0.2f, 0.3f, 0.9f);
-            float result = p.activate();
+            boolean result = p.activate();
             System.out.println("RESULT = "+result);
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

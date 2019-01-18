@@ -6,6 +6,12 @@
 
 package it.cnr.istc.test;
 
+import it.cnr.istc.Perceptron;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -19,9 +25,12 @@ import javax.swing.WindowConstants;
  */
 public class TestPercetrone extends javax.swing.JFrame {
 
+    Perceptron perceptron = new Perceptron(3);
+    boolean currentRed = false;
     /** Creates new form TestPercetrone */
     public TestPercetrone() {
         initComponents();
+        
     }
 
     /** This method is called from within the constructor to
@@ -33,44 +42,98 @@ public class TestPercetrone extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton2 = new JButton();
         jLabel1 = new JLabel();
-        jButton1 = new JButton();
+        jButton_sbagliato = new JButton();
         jColorChooser1 = new JColorChooser();
+        jButton_select = new JButton();
+
+        jButton2.setText("jButton2");
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Colore");
 
-        jButton1.setText("jButton1");
+        jButton_sbagliato.setText("SBAGLIATO");
+        jButton_sbagliato.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jButton_sbagliatoActionPerformed(evt);
+            }
+        });
+
+        jButton_select.setText("Select");
+        jButton_select.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jButton_selectActionPerformed(evt);
+            }
+        });
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jColorChooser1, GroupLayout.PREFERRED_SIZE, 519, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
+                .addComponent(jColorChooser1, GroupLayout.PREFERRED_SIZE, 539, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(50, 50, 50))
-                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton_select))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jButton_sbagliato, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jColorChooser1, GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton_sbagliato)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton_select))
+                    .addComponent(jColorChooser1, GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton_selectActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton_selectActionPerformed
+        try {
+            Color selectedColor = this.jColorChooser1.getColor();
+//            System.out.println("selected color = "+selectedColor);
+            float red   = (float)(((selectedColor.getRed() * 100f)/255f)/100);
+            float green = (float)(((selectedColor.getGreen() * 100f)/255f)/100);
+            float blue  = (float)(((selectedColor.getBlue()* 100f)/255f)/100);
+            
+//            System.out.println("red = "+red);
+//            System.out.println("green = "+green);
+//            System.out.println("blue = "+blue);
+            perceptron.setInputs(red,green,blue);
+            currentRed = perceptron.activate();
+            if(currentRed){
+                this.jLabel1.setText("ROSSO");
+            }else{
+                this.jLabel1.setText("NON E' ROSSO");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(TestPercetrone.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        
+    }//GEN-LAST:event_jButton_selectActionPerformed
+
+    private void jButton_sbagliatoActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton_sbagliatoActionPerformed
+
+            this.perceptron.adjust(!currentRed);
+ 
+    }//GEN-LAST:event_jButton_sbagliatoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -108,7 +171,9 @@ public class TestPercetrone extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JButton jButton1;
+    private JButton jButton2;
+    private JButton jButton_sbagliato;
+    private JButton jButton_select;
     private JColorChooser jColorChooser1;
     private JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
