@@ -21,7 +21,7 @@ public class Main {
         try {
             System.out.println("PERCEPTRON TEST");
             
-            Perceptron p = new Perceptron(3);
+            PerceptronTEST p = new PerceptronTEST(3);
             p.setInputs(0.2f, 0.3f, 0.9f);
             boolean result = p.activate();
             System.out.println("RESULT = "+result);

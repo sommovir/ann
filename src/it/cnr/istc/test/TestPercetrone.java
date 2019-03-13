@@ -6,7 +6,7 @@
 
 package it.cnr.istc.test;
 
-import it.cnr.istc.Perceptron;
+import it.cnr.istc.PerceptronTEST;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +25,7 @@ import javax.swing.WindowConstants;
  */
 public class TestPercetrone extends javax.swing.JFrame {
 
-    Perceptron perceptron = new Perceptron(3);
+    PerceptronTEST perceptron = new PerceptronTEST(3);
     boolean currentRed = false;
     /** Creates new form TestPercetrone */
     public TestPercetrone() {

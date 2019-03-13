@@ -13,15 +13,16 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Luca Coraci <luca.coraci@istc.cnr.it> ISTC-CNR
  */
-public class Perceptron {
+public class PerceptronTEST {
 
     private Float[] inputs;
     private Float[] weights;
     private float bias = ThreadLocalRandom.current().nextFloat();
     private float sigma = 0.5f; //adjustment speed
     private float potential = 0f;
+    private boolean memoryForNullInputs = false;
 
-    public Perceptron(int input_size) {
+    public PerceptronTEST(int input_size) {
         this.inputs = new Float[input_size];
         this.weights = new Float[input_size];
         for (int i = 0; i < weights.length; i++) {
@@ -39,6 +40,15 @@ public class Perceptron {
         }
     }
 
+    public boolean isNullInput() {
+        for (Float input : inputs) {
+            if(input != 0){
+                return false;
+            }
+        }
+        return true;
+    }
+
 //    public float activate(){
 //        
 //        float sum = 0;
@@ -52,8 +62,12 @@ public class Perceptron {
 //        
 //    }
     public boolean activate() {
+        
+        if(isNullInput()){
+            return this.memoryForNullInputs;
+        }
 
-        float potenzialeAttivazione = 0;
+        float potenzialeAttivazione = bias;
         for (int i = 0; i < inputs.length; i++) {
             potenzialeAttivazione += (this.inputs[i] * this.weights[i]);
         }
@@ -68,17 +82,21 @@ public class Perceptron {
     }
 
     public void adjust(boolean correctValue) {
+        
+        if(isNullInput()){
+            this.memoryForNullInputs = correctValue;
+        }
 
         int givenAnswer = this.potential >= 0 ? 1 : 0; //A
         int correctAnswer = correctValue ? 1 : 0;      //A'
 
-        System.out.println("OLD CONFIG: "+inputs[0]+"  "+inputs[1]+"  "+inputs[2]+"  -----  "+weights[0]+" "+weights[1]+" "+weights[2]+" -------> "+this.potential);
-        
+        System.out.println("OLD CONFIG: " + inputs[0] + "  " + inputs[1] + "  " + inputs[2] + "  -----  " + weights[0] + " " + weights[1] + " " + weights[2] + " -------> " + this.potential);
+
         for (int i = 0; i < inputs.length; i++) {
-            this.weights[i] = this.weights[i] + (this.sigma * (correctAnswer - givenAnswer) * (this.inputs[i] == 0 ? 0.1f : this.inputs[i] ));
+            this.weights[i] = this.weights[i] + (this.sigma * (correctAnswer - givenAnswer) * this.inputs[i]);
         }
-        
-        System.out.println("NEW CONFIG: "+inputs[0]+"  "+inputs[1]+"  "+inputs[2]+"  -----  "+weights[0]+" "+weights[1]+" "+weights[2]);
+
+        System.out.println("NEW CONFIG: " + inputs[0] + "  " + inputs[1] + "  " + inputs[2] + "  -----  " + weights[0] + " " + weights[1] + " " + weights[2]);
         System.out.println("----------------------");
 
     }
