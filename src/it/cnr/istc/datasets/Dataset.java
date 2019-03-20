@@ -45,7 +45,7 @@ public class Dataset {
     }
     
     public int getError(){
-        return this.givenAnswer - this.desiredAnswer;
+        return this.desiredAnswer - this.givenAnswer;
     }
     
     

@@ -14,20 +14,14 @@ import java.util.List;
  */
 public class DataBucket {
     
-    private int size;
     
     private List<Dataset> datasets;
 
-    public DataBucket(int size) {
-        this.size = size;
-        this.datasets = new ArrayList<>(size);
+    public DataBucket() {
+        this.datasets = new ArrayList<>();
     }
     
     public void addDataset(Dataset data){
-        if(this.datasets.size()== size){
-            System.out.println("ERRORE TROPPI");
-            return;
-        }
         this.datasets.add(data);
     }
     
