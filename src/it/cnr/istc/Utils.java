@@ -23,4 +23,26 @@ public class Utils {
         
     }
     
+    public static float calculateStandarDeviation(float[] values){
+        
+        if(values.length == 0){
+            return 0;
+        }
+        
+        float sum = 0;
+        for (float value : values) {
+            sum+=value;
+        }
+        float average = sum/values.length;
+        System.out.println("average: "+average);
+        
+        float deviation = 0;
+        for (float value : values) {
+            deviation+=((value-average)*(value-average));
+        }
+        
+        return (float)Math.sqrt(deviation/((float)values.length-1));
+        
+    }
+    
 }

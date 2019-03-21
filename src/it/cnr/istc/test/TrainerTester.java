@@ -5,7 +5,9 @@
  */
 package it.cnr.istc.test;
 
+import it.cnr.istc.Utils;
 import it.cnr.istc.ann.Trainer;
+import it.cnr.istc.datasets.DataBucket;
 import it.cnr.istc.datasets.Dataset;
 
 /**
@@ -15,10 +17,24 @@ import it.cnr.istc.datasets.Dataset;
 public class TrainerTester {
 
     public static void main(String[] args) {
+        
+        System.out.println("DEVIATION TEST");
+        
+        float ds = Utils.calculateStandarDeviation(new float[]{3,4,5,9,9});
+        
+        System.out.println("deviation is: "+Utils.calculateStandarDeviation(new float[]{3,4,5,9,9}));
+        System.out.println("deviation is: "+Utils.calculateStandarDeviation(new float[]{6,6,6,6,6}));
+        System.out.println("deviation is: "+Utils.calculateStandarDeviation(new float[]{2,4,7,8,9}));
+        
+        
         System.out.println("ANN Tester");
         //1 = red
         //-1 = other
 
+        DataBucket bucket1 = new DataBucket(8);
+        DataBucket bucket2 = new DataBucket(8);
+        DataBucket bucket3 = new DataBucket(8);
+        
         Dataset data1 = new Dataset(new float[]{240, 4, 1}, 1);
         Dataset data2 = new Dataset(new float[]{130, 89, 31}, -1);
         Dataset data3 = new Dataset(new float[]{68, 196, 58}, -1);
@@ -43,32 +59,40 @@ public class TrainerTester {
         Dataset data22 = new Dataset(new float[]{230, 230, 0}, -1);
         Dataset data23 = new Dataset(new float[]{230, 230, 0}, -1);
         Dataset data24 = new Dataset(new float[]{153, 0, 0}, 1);
+        Dataset data25 = new Dataset(new float[]{7, 51, 4}, -1);
+        
+        bucket1.addDataset(data1);
+        bucket1.addDataset(data2);
+        bucket1.addDataset(data3);
+        bucket1.addDataset(data4);
+        bucket1.addDataset(data5);
+        bucket1.addDataset(data6);
+        bucket1.addDataset(data7);
+        bucket1.addDataset(data8);
+        
+        bucket2.addDataset(data9);
+        bucket2.addDataset(data10);
+        bucket2.addDataset(data11);
+        bucket2.addDataset(data12);
+        bucket2.addDataset(data13);
+        bucket2.addDataset(data14);
+        bucket2.addDataset(data16);
+        bucket2.addDataset(data17);
+        
+        bucket3.addDataset(data18);
+        bucket3.addDataset(data19);
+        bucket3.addDataset(data20);
+        bucket3.addDataset(data21);
+        bucket3.addDataset(data22);
+        bucket3.addDataset(data23);
+        bucket3.addDataset(data25);
+        
+        
 
         Trainer trainer = new Trainer(3);
-        trainer.addTrainingData(data1);
-        trainer.addTrainingData(data2);
-        trainer.addTrainingData(data3);
-        trainer.addTrainingData(data4);
-        trainer.addTrainingData(data5);
-        trainer.addTrainingData(data6);
-        trainer.addTrainingData(data7);
-        trainer.addTrainingData(data8);
-        trainer.addTrainingData(data9);
-        trainer.addTrainingData(data10);
-        trainer.addTrainingData(data11);
-        trainer.addTrainingData(data12);
-        trainer.addTrainingData(data13);
-        trainer.addTrainingData(data14);
-        trainer.addTrainingData(data15);
-        trainer.addTrainingData(data16);
-        trainer.addTrainingData(data17);
-        trainer.addTrainingData(data18);
-        trainer.addTrainingData(data19);
-        trainer.addTrainingData(data20);
-        trainer.addTrainingData(data21);
-        trainer.addTrainingData(data22);
-        trainer.addTrainingData(data23);
-        trainer.addTrainingData(data24);
+        trainer.addTrainingData(bucket1);
+        trainer.addTrainingData(bucket2);
+        trainer.addTrainingData(bucket3);
 
         trainer.train();
 

@@ -5,6 +5,7 @@
  */
 package it.cnr.istc.datasets;
 
+import it.cnr.istc.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +15,31 @@ import java.util.List;
  */
 public class DataBucket {
     
-    
+    private int size;
     private List<Dataset> datasets;
 
-    public DataBucket() {
-        this.datasets = new ArrayList<>();
+    public DataBucket(int size) {
+        this.size = size;
+        this.datasets = new ArrayList<>(size);
     }
     
     public void addDataset(Dataset data){
         this.datasets.add(data);
     }
+    
+    public float getErrorDeviationStandard(){
+        float [] errors  = new float[size];
+        
+        for (int i=0;i<size;i++) {
+            errors[i] = datasets.get(i).getError();
+        }
+        return Utils.calculateStandarDeviation(errors);
+    }
+
+    public List<Dataset> getDatasets() {
+        return datasets;
+    }
+    
     
     
     
