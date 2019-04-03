@@ -5,7 +5,7 @@
  */
 package it.cnr.istc.ann;
 
-import it.cnr.istc.Utils;
+import it.cnr.istc.UtilsANN;
 import it.cnr.istc.datasets.Dataset;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -18,7 +18,7 @@ public class Perceptron  {
     private float[] inputs;
     private float[] weights;
     private float bias = 1;//ThreadLocalRandom.current().nextFloat();
-    private float learningRate = 0.8f; //adjustment speed
+    private float learningRate = 0.3f; //adjustment speed
     private float potential = 0f;
     private int lastActivationResult;
 
@@ -26,7 +26,7 @@ public class Perceptron  {
         this.inputs = new float[input_size];
         this.weights = new float[input_size];
         for (int i = 0; i < weights.length; i++) {
-            weights[i] = Utils.randomNegativePositive();
+            weights[i] = UtilsANN.randomNegativePositive();
         }
     }
 

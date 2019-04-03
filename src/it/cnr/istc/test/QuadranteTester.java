@@ -5,6 +5,11 @@
  */
 package it.cnr.istc.test;
 
+import it.cnr.istc.ann.Trainer;
+import it.cnr.istc.ann.events.TrainingEventManager;
+import it.cnr.istc.ann.events.TrainingListener;
+import it.cnr.istc.datasets.DataBucket;
+import it.cnr.istc.datasets.Dataset;
 import it.cnr.istc.icv.engine.MixedDataPanel;
 import it.cnr.istc.icv.engine.MyJLayer;
 import it.cnr.istc.icv.engine.MyLayer;
@@ -17,35 +22,44 @@ import it.cnr.istc.icv.test.LinearDataSupporter;
 import it.cnr.istc.icv.test.TimeValueSupporterClass;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 /**
  *
  * @author Luca Coraci <luca.coraci@istc.cnr.it> ISTC-CNR
  */
-public class QuadranteTester extends javax.swing.JFrame implements CoordinateListener, PopupMenuTriggerListener {
+public class QuadranteTester extends javax.swing.JFrame implements CoordinateListener, PopupMenuTriggerListener, TrainingListener {
 
     final static MixedDataPanel panel = new MixedDataPanel();
+    private int step = 5;
 
     /**
      * Creates new form QuadranteTester
      */
     public QuadranteTester() {
-        try {
+//        try {
             initComponents();
+            TrainingEventManager.getInstance().addTrainingListener(this);
             panel.addCoordinateListener(this);
             panel.addPopupMenuTriggerListener(this);
-            panel.setStartRange(new Date(113, 9, 5, 9, 0, 0).getTime());
-            panel.setEndRange(new Date(113, 9, 5, 12, 0, 0).getTime());
-            panel.setShowDate(true);
+//            panel.setStartRange(new Date().getTime());
+//            panel.setEndRange(new Date().getTime()+ (1000l*60l*60));
+            panel.setStartRange(0);
+            panel.setEndRange(100);
+
+            panel.setShowDate(false);
 //            panel.setBackgroundChartColor(Color.BLACK);
 //            panel.setyAxisDataColor(Color.yellow);
 //            panel.setxAxisDataColor(Color.yellow);
@@ -55,9 +69,9 @@ public class QuadranteTester extends javax.swing.JFrame implements CoordinateLis
 
             LinearDataSupporter s = new LinearDataSupporter("MEGA SUPER Error");
 //        s.setOrder(1);
-            s.setDiscret(true);
-            s.setMaxValueToShow(100);
-            s.setMinValueToShow(10);
+            s.setDiscret(false);
+            s.setMaxValueToShow(10);
+            s.setMinValueToShow(0);
             s.setMaxThresholdPaintable(true);
             s.setMaximumThreshold(50);
             s.setMinThresholdPaintable(true);
@@ -72,21 +86,21 @@ public class QuadranteTester extends javax.swing.JFrame implements CoordinateLis
             containerP.add(jlayer);
             this.jScrollPane1.setViewportView(containerP);
 
-            TimeValueSupporterClass ds1 = new TimeValueSupporterClass(23, "Sistolic", new Date(113, 9, 5, 9, 50, 0));
-//            s.addData(ds1);
-            TimeValueSupporterClass ds2 = new TimeValueSupporterClass(50, "Sistolic", new Date(113, 9, 5, 10, 50, 0));
-//            s.addData(ds2);
-            TimeValueSupporterClass ds3 = new TimeValueSupporterClass(44, "Sistolic", new Date(113, 9, 5, 11, 10, 0));
-//            s.addData(ds3);
-            TimeValueSupporterClass ds4 = new TimeValueSupporterClass(40, "Dia", new Date(113, 9, 5, 9, 50, 0));
-
-            panel.addLinearData("MEGA SUPER Error", ds1, false);
-            panel.addLinearData("MEGA SUPER Error", ds2, false);
-            panel.addLinearData("MEGA SUPER Error", ds3, false);
-            panel.addLinearData("MEGA SUPER Error", ds4, false);
-        } catch (TypeDataMismatchException ex) {
-            Logger.getLogger(QuadranteTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//            TimeValueSupporterClass ds1 = new TimeValueSupporterClass(23, "Sistolic", new Date(113, 9, 5, 9, 50, 0));
+////            s.addData(ds1);
+//            TimeValueSupporterClass ds2 = new TimeValueSupporterClass(50, "Sistolic", new Date(113, 9, 5, 10, 50, 0));
+////            s.addData(ds2);
+//            TimeValueSupporterClass ds3 = new TimeValueSupporterClass(44, "Sistolic", new Date(113, 9, 5, 11, 10, 0));
+////            s.addData(ds3);
+//            TimeValueSupporterClass ds4 = new TimeValueSupporterClass(40, "Dia", new Date(113, 9, 5, 9, 50, 0));
+//
+//            panel.addLinearData("MEGA SUPER Error", ds1, false);
+//            panel.addLinearData("MEGA SUPER Error", ds2, false);
+//            panel.addLinearData("MEGA SUPER Error", ds3, false);
+//            panel.addLinearData("MEGA SUPER Error", ds4, false);
+//        } catch (TypeDataMismatchException ex) {
+//            Logger.getLogger(QuadranteTester.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     /**
@@ -99,11 +113,23 @@ public class QuadranteTester extends javax.swing.JFrame implements CoordinateLis
     private void initComponents() {
 
         jToolBar1 = new JToolBar();
+        jButton1 = new JButton();
         jScrollPane1 = new JScrollPane();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         jToolBar1.setRollover(true);
+
+        jButton1.setText("TRAIN");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(SwingConstants.BOTTOM);
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -120,6 +146,73 @@ public class QuadranteTester extends javax.swing.JFrame implements CoordinateLis
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        DataBucket bucket1 = new DataBucket(8);
+        DataBucket bucket2 = new DataBucket(8);
+        DataBucket bucket3 = new DataBucket(8);
+        
+        Dataset data1 = new Dataset(new float[]{240, 4, 1}, 1);
+        Dataset data2 = new Dataset(new float[]{130, 89, 31}, -1);
+        Dataset data3 = new Dataset(new float[]{68, 196, 58}, -1);
+        Dataset data4 = new Dataset(new float[]{31, 36, 31}, -1);
+        Dataset data5 = new Dataset(new float[]{137, 105, 219}, -1);
+        Dataset data6 = new Dataset(new float[]{156, 30, 8}, 1);
+        Dataset data7 = new Dataset(new float[]{199, 4, 43}, 1);
+        Dataset data8 = new Dataset(new float[]{207, 204, 124}, -1);
+        Dataset data9 = new Dataset(new float[]{38, 46, 163}, -1);
+        Dataset data10 = new Dataset(new float[]{18, 186, 141}, -1);
+        Dataset data11 = new Dataset(new float[]{245, 71, 37}, 1);
+        Dataset data12 = new Dataset(new float[]{247, 161, 143}, -1);
+        Dataset data13 = new Dataset(new float[]{220, 98, 224}, -1);
+        Dataset data14 = new Dataset(new float[]{38, 25, 38}, -1);
+        Dataset data15 = new Dataset(new float[]{87, 245, 30}, -1);
+        Dataset data16 = new Dataset(new float[]{26, 0, 51}, -1);
+        Dataset data17 = new Dataset(new float[]{0, 0, 26}, -1);
+        Dataset data18 = new Dataset(new float[]{0, 0, 179}, -1);
+        Dataset data19 = new Dataset(new float[]{225, 230, 230}, -1);
+        Dataset data20 = new Dataset(new float[]{5, 20, 5}, -1);
+        Dataset data21 = new Dataset(new float[]{76, 46, 0}, -1);
+        Dataset data22 = new Dataset(new float[]{230, 230, 0}, -1);
+        Dataset data23 = new Dataset(new float[]{230, 230, 0}, -1);
+        Dataset data24 = new Dataset(new float[]{153, 0, 0}, 1);
+        Dataset data25 = new Dataset(new float[]{7, 51, 4}, -1);
+        
+        bucket1.addDataset(data1);
+        bucket1.addDataset(data2);
+        bucket1.addDataset(data3);
+        bucket1.addDataset(data4);
+        bucket1.addDataset(data5);
+        bucket1.addDataset(data6);
+        bucket1.addDataset(data7);
+        bucket1.addDataset(data8);
+        
+        bucket2.addDataset(data9);
+        bucket2.addDataset(data10);
+        bucket2.addDataset(data11);
+        bucket2.addDataset(data12);
+        bucket2.addDataset(data13);
+        bucket2.addDataset(data14);
+        bucket2.addDataset(data16);
+        bucket2.addDataset(data17);
+        
+        bucket3.addDataset(data18);
+        bucket3.addDataset(data19);
+        bucket3.addDataset(data20);
+        bucket3.addDataset(data21);
+        bucket3.addDataset(data22);
+        bucket3.addDataset(data23);
+        bucket3.addDataset(data24);
+        bucket3.addDataset(data25);
+        
+        
+        
+        Trainer.getInstance().addTrainingData(bucket1);
+        Trainer.getInstance().addTrainingData(bucket2);
+        Trainer.getInstance().addTrainingData(bucket3);
+
+        Trainer.getInstance().train();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -157,6 +250,7 @@ public class QuadranteTester extends javax.swing.JFrame implements CoordinateLis
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private JButton jButton1;
     private JScrollPane jScrollPane1;
     private JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
@@ -183,5 +277,19 @@ public class QuadranteTester extends javax.swing.JFrame implements CoordinateLis
 
     @Override
     public void rightClickAreaTriggered(String string, ICVAnnotation icva, Date date, int i, int i1) {
+    }
+
+    @Override
+    public void bucketDone(DataBucket bucket) {
+        System.out.println(" ---------------------->>>>> ERRORE: "+bucket.getErrorDeviationStandard());
+        try {
+            TimeValueSupporterClass ds1 = new TimeValueSupporterClass(bucket.getErrorDeviationStandard(), "SQM", new Date(this.step));
+            panel.addLinearData("MEGA SUPER Error", ds1, false);
+            step+=5;
+            panel.invalidate();
+            panel.repaint();
+        } catch (TypeDataMismatchException ex) {
+            Logger.getLogger(QuadranteTester.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

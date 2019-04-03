@@ -3,16 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.cnr.istc.ann.events;
+package it.cnr.istc.test.divisorepiano;
 
+import it.cnr.istc.UtilsANN;
+import it.cnr.istc.ann.Trainer;
 import it.cnr.istc.datasets.DataBucket;
+import it.cnr.istc.datasets.Dataset;
 
 /**
  *
  * @author Luca Coraci <luca.coraci@istc.cnr.it> ISTC-CNR
  */
-public interface TrainingListener {
-    
-    public void bucketDone(DataBucket bucket);
-    
+public class DivisorePianoTester {
+
+    public static void main(String[] args) {
+
+     
+
+    }
+
 }

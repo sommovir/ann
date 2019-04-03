@@ -26,7 +26,7 @@ public class PerceptronTEST {
         this.inputs = new Float[input_size];
         this.weights = new Float[input_size];
         for (int i = 0; i < weights.length; i++) {
-            weights[i] = Utils.randomNegativePositive();
+            weights[i] = UtilsANN.randomNegativePositive();
 //            System.out.println("random weight[" + i + "] = " + weights[i]);
         }
     }
