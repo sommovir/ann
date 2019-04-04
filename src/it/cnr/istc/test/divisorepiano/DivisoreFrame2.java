@@ -43,23 +43,27 @@ import javax.swing.WindowConstants;
  *
  * @author Luca Coraci <luca.coraci@istc.cnr.it> ISTC-CNR
  */
-public class DivisoreFrame extends javax.swing.JFrame implements TrainingListener, CoordinateListener, PopupMenuTriggerListener {
+public class DivisoreFrame2 extends javax.swing.JFrame implements TrainingListener, CoordinateListener, PopupMenuTriggerListener {
 
     final static MixedDataPanel panel = new MixedDataPanel();
     private int step = 5;
+    int wait = 20;
 
     /**
      * Creates new form DivisoreFrame
      */
-    public DivisoreFrame() {
+    public DivisoreFrame2() {
         initComponents();
+
+        this.linePanel1.setStartLinePoint(new PointTest(0, 200, rootPaneCheckingEnabled));
+        this.linePanel1.setEndLinePoint(new PointTest(700, 700, rootPaneCheckingEnabled));
         TrainingEventManager.getInstance().addTrainingListener(this);
 
         panel.addCoordinateListener(this);
         panel.addPopupMenuTriggerListener(this);
 
         panel.setStartRange(0);
-        panel.setEndRange(2500);
+        panel.setEndRange(5500);
 
         panel.setShowDate(false);
         panel.setBackground(Color.WHITE);
@@ -110,10 +114,10 @@ public class DivisoreFrame extends javax.swing.JFrame implements TrainingListene
         linePanel1 = new LinePanel();
         jToolBar1 = new JToolBar();
         jButton1 = new JButton();
+        jButton2 = new JButton();
         jScrollPane1 = new JScrollPane();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(800, 800));
 
         linePanel1.setPreferredSize(new Dimension(800, 800));
 
@@ -139,6 +143,17 @@ public class DivisoreFrame extends javax.swing.JFrame implements TrainingListene
             }
         });
         jToolBar1.add(jButton1);
+
+        jButton2.setText("Test Function");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(SwingConstants.BOTTOM);
+        jButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -166,39 +181,56 @@ public class DivisoreFrame extends javax.swing.JFrame implements TrainingListene
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int j = 0; j < 1; j++) {
+                for (int j = 0; j < 20000; j++) {
                     try {
                         Trainer.getInstance().clearTrainingData();
                         linePanel1.clearPoints();
                         DataBucket db = new DataBucket(2);
-                        for (int i = 0; i < 50; i++) {
+                        for (int i = 0; i < 600; i++) {
                             int x = UtilsANN.generateRandomInRange(0, 700);
                             int y = UtilsANN.generateRandomInRange(0, 700);
-                            
-                            db.addDataset(new Dataset(new float[]{x, y,1}, x - y > 0 ? 1 : -1));
+                            int lineY = (int)((5f / 7f) * (float)x + 200);
+                            db.addDataset(new Dataset(new float[]{x, y, 1}, y > lineY ? 1 : -1));
+//                            db.addDataset(new Dataset(new float[]{x, y, 1}, y - ((5/7) *x) -200 > 0 ? 1 : -1));
+//                            db.addDataset(new Dataset(new float[]{x, y}, x-y > 0 ? 1 : -1));
                         }
-                        System.out.println("db dataset size: > " + db.getDatasets().size());
+//                        System.out.println("db dataset size: > " + db.getDatasets().size());
                         Trainer.getInstance().addTrainingData(db);
-                        
+
                         Trainer.getInstance().train();
-                        Thread.sleep(150);
+                        Thread.sleep(10);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(DivisoreFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DivisoreFrame2.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
 
             }
         });
-        
+
         t.start();
 
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
+    private void jButton2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        for (int i = 0; i < 1; i++) {
+            int x = UtilsANN.generateRandomInRange(0, 700);
+            int y = UtilsANN.generateRandomInRange(0, 700);
+            System.out.println("x = "+x);
+            System.out.println("y = "+y);
+            int lineY = (int)((5f / 7f) * (float)x + 200);
+            System.out.println("lineY = "+lineY);
+            this.linePanel1.drawPoint(x, y, y>lineY );
+            this.linePanel1.invalidate();
+            this.linePanel1.repaint();
+        }
+    
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+/**
+ * @param args the command line arguments
+ */
+public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -209,36 +241,56 @@ public class DivisoreFrame extends javax.swing.JFrame implements TrainingListene
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                }
+                
+
+}
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DivisoreFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DivisoreFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DivisoreFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DivisoreFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DivisoreFrame2.class
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        
+
+} catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(DivisoreFrame2.class
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        
+
+} catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(DivisoreFrame2.class
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        
+
+} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(DivisoreFrame2.class
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DivisoreFrame().setVisible(true);
+                new DivisoreFrame2().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JButton jButton1;
+    private JButton jButton2;
     private JScrollPane jScrollPane1;
     private JToolBar jToolBar1;
     private LinePanel linePanel1;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void bucketDone(DataBucket bucket) {
+        public void bucketDone(DataBucket bucket) {
+        if (wait > 0) {
+            wait--;
+            return;
+        } else {
+            wait = 20;
+        }
 
         for (Dataset dataset : bucket.getDatasets()) {
             float[] inputs = dataset.getInputs();
@@ -270,33 +322,36 @@ public class DivisoreFrame extends javax.swing.JFrame implements TrainingListene
 
             panel.invalidate();
             panel.repaint();
-        } catch (TypeDataMismatchException ex) {
-            Logger.getLogger(QuadranteTester.class.getName()).log(Level.SEVERE, null, ex);
+        
+
+} catch (TypeDataMismatchException ex) {
+            Logger.getLogger(QuadranteTester.class
+.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     @Override
-    public void currentDate(Date date) {
+        public void currentDate(Date date) {
     }
 
     @Override
-    public void currentValue(Object o) {
+        public void currentValue(Object o) {
     }
 
     @Override
-    public void showTooltip(String string, int i, int i1) {
+        public void showTooltip(String string, int i, int i1) {
     }
 
     @Override
-    public void forceFromTo(boolean bln) {
+        public void forceFromTo(boolean bln) {
     }
 
     @Override
-    public void rightClickTriggered(String string, Date date, int i, int i1) {
+        public void rightClickTriggered(String string, Date date, int i, int i1) {
     }
 
     @Override
-    public void rightClickAreaTriggered(String string, ICVAnnotation icva, Date date, int i, int i1) {
+        public void rightClickAreaTriggered(String string, ICVAnnotation icva, Date date, int i, int i1) {
     }
 }

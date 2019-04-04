@@ -49,7 +49,7 @@ public class Trainer {
 
     public void train() {
         for (DataBucket dataBucket : trainingData) {
-            System.out.println("DATA BUCKET SIZE = " + dataBucket.getDatasets().size());
+//            System.out.println("DATA BUCKET SIZE = " + dataBucket.getDatasets().size());
             for (Dataset dataset : dataBucket.getDatasets()) {
                 this.perceptron.train(dataset);
             }

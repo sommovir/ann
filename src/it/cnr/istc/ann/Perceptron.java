@@ -17,8 +17,8 @@ public class Perceptron  {
     
     private float[] inputs;
     private float[] weights;
-    private float bias = 1;//ThreadLocalRandom.current().nextFloat();
-    private float learningRate = 0.3f; //adjustment speed
+//    private float bias = 1;//ThreadLocalRandom.current().nextFloat();
+    private float learningRate = 0.25f; //adjustment speed
     private float potential = 0f;
     private int lastActivationResult;
 
@@ -48,17 +48,17 @@ public class Perceptron  {
         this.inputs = dataset.getInputs();
         dataset.setGivenAnswer(this.activate());
         int error = dataset.getError();
-        System.out.print("error: \t\t\t\t"+error);
+//        System.out.print("error: \t\t\t\t"+error);
         for (int i = 0; i < weights.length; i++) {
             //weights[i] +=  (error * inputs[i]);
              //this.weights[i] = this.weights[i] + (this.learningRate * (error) * this.inputs[i]);
              weights[i] +=  (error * inputs[i] * this.learningRate);
         }
-        System.out.print("\t\t-- weights: ");
+//        System.out.print("\t\t-- weights: ");
         for (float w : weights) {
-            System.out.print(w+", ");
+//            System.out.print(w+", ");
         }
-        System.out.println("");
+//        System.out.println("");
     }
     
     public int sign(float x){
@@ -67,7 +67,7 @@ public class Perceptron  {
 
     public int activate() {
 
-        float potenzialeAttivazione = bias;
+        float potenzialeAttivazione = 0;
         for (int i = 0; i < inputs.length; i++) {
             potenzialeAttivazione += (this.inputs[i] * this.weights[i]);
         }
@@ -75,6 +75,14 @@ public class Perceptron  {
         this.lastActivationResult = sign(this.potential);
         return this.lastActivationResult;
 
+    }
+    
+    public float guessY(float x){
+        float w0 = weights[0];
+        float w1 = weights[1];
+        float w2 = weights[2];
+//        System.out.println(" - w2/w1 = "+w2/w1);
+        return -(w2/w1) - (w0/w1) *x;
     }
     
     public void wrong(){

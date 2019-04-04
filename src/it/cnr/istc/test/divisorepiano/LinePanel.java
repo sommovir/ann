@@ -6,6 +6,7 @@
 package it.cnr.istc.test.divisorepiano;
 
 import it.cnr.istc.UtilsANN;
+import it.cnr.istc.ann.Trainer;
 import it.cnr.istc.datasets.Dataset;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -21,6 +22,8 @@ import javax.swing.GroupLayout;
 public class LinePanel extends javax.swing.JPanel {
 
     public List<PointTest> points = new ArrayList<>();
+    public PointTest startLinePoint;
+    public PointTest endLinePoint;
 
     /**
      * Creates new form LinePanel
@@ -33,8 +36,26 @@ public class LinePanel extends javax.swing.JPanel {
 //            
 //            drawPoint(x, y, x-y>0 ? true : false);
 //        }
-        
 
+        this.startLinePoint = new PointTest(0, 0, true);
+        this.endLinePoint = new PointTest(-1, -1, true);
+
+    }
+
+    public PointTest getStartLinePoint() {
+        return startLinePoint;
+    }
+
+    public void setStartLinePoint(PointTest startLinePoint) {
+        this.startLinePoint = startLinePoint;
+    }
+
+    public PointTest getEndLinePoint() {
+        return endLinePoint;
+    }
+
+    public void setEndLinePoint(PointTest endLinePoint) {
+        this.endLinePoint = endLinePoint;
     }
 
     @Override
@@ -42,17 +63,28 @@ public class LinePanel extends javax.swing.JPanel {
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.drawLine(0, 0, this.getWidth(), this.getHeight());
+        if (this.endLinePoint.getX() == -1) {
+            g2d.drawLine(startLinePoint.getX(), startLinePoint.getY(), this.getWidth(), this.getHeight());
+        }else{
+            g2d.drawLine(startLinePoint.getX(), startLinePoint.getY(), endLinePoint.getX(), endLinePoint.getY());
+        }
 
-        System.out.println("POINT SIZE: "+points.size());
+//        System.out.println("POINT SIZE: " + points.size());
         for (PointTest point : points) {
             if (point.isOk()) {
                 g2d.setPaint(new Color(0, 255, 0));
-            }else{
+            } else {
                 g2d.setPaint(new Color(255, 0, 0));
             }
             g2d.fillOval(point.getX() - 4, point.getY() - 4, 8, 8);
         }
+        
+        g2d.setPaint(new Color(0,0,255));
+        int bohx = (int)Trainer.getInstance().getPerceptron().guessY(0);
+//        System.out.println("BOHX = "+bohx);
+        g2d.drawLine(1, (int)Trainer.getInstance().getPerceptron().guessY(1), 700, (int)Trainer.getInstance().getPerceptron().guessY(700));
+        
+        
     }
 
     public void drawPoint(int x, int y, boolean ok) {

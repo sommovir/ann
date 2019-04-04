@@ -13,6 +13,7 @@ public class PointTest {
     
     private int x;
     private int y;
+    private int bias = 1;
     private boolean ok;
 
     public PointTest() {
@@ -22,6 +23,10 @@ public class PointTest {
         this.x = x;
         this.y = y;
         this.ok = ok;
+    }
+    
+    public int getBias(){
+        return this.bias;
     }
 
     public int getX() {
