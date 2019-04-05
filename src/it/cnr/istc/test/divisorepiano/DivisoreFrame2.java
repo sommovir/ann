@@ -27,11 +27,13 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.Beans;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
@@ -47,13 +49,26 @@ public class DivisoreFrame2 extends javax.swing.JFrame implements TrainingListen
 
     final static MixedDataPanel panel = new MixedDataPanel();
     private int step = 5;
-    int wait = 20;
+    int wait = 40;
+    int bucketCount = 50;
+    int megaStep = 5;
+    int totFails = 0;
+    float megaMedia = 0;
+    
+    LinearDataSupporter s = new LinearDataSupporter("Media Errori");
+    LinearDataSupporter s2 = new LinearDataSupporter("Numero Fails");
+    
+    float min = 200;
 
     /**
      * Creates new form DivisoreFrame
      */
     public DivisoreFrame2() {
         initComponents();
+
+        if (Beans.isDesignTime()) {
+            return;
+        }
 
         this.linePanel1.setStartLinePoint(new PointTest(0, 200, rootPaneCheckingEnabled));
         this.linePanel1.setEndLinePoint(new PointTest(700, 700, rootPaneCheckingEnabled));
@@ -63,13 +78,13 @@ public class DivisoreFrame2 extends javax.swing.JFrame implements TrainingListen
         panel.addPopupMenuTriggerListener(this);
 
         panel.setStartRange(0);
-        panel.setEndRange(5500);
+        panel.setEndRange(10000);
 
         panel.setShowDate(false);
         panel.setBackground(Color.WHITE);
         panel.setZoomEnable(true);
 
-        LinearDataSupporter s = new LinearDataSupporter("Deviazione Standard");
+        
 //        s.setOrder(1);
         s.setDiscret(false);
         s.setMaxValueToShow(10);
@@ -77,9 +92,9 @@ public class DivisoreFrame2 extends javax.swing.JFrame implements TrainingListen
         s.setMaxThresholdPaintable(true);
         s.setMaximumThreshold(50);
         s.setMinThresholdPaintable(true);
-        s.setMinimumThreshold(15);
+        s.setMinimumThreshold(min);
 
-        LinearDataSupporter s2 = new LinearDataSupporter("Numero Fails");
+        
 //        s.setOrder(1);
         s2.setDiscret(false);
         s2.setMaxValueToShow(10);
@@ -181,7 +196,12 @@ public class DivisoreFrame2 extends javax.swing.JFrame implements TrainingListen
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int j = 0; j < 20000; j++) {
+                for (int j = 0; j < 40000; j++) {
+                    if(j%10000 == 0 && j!=0){
+                        System.out.println("\t\t\t\tDECREASEEEE");
+                        Trainer.getInstance().getPerceptron().decreaseLearningRate(0.09f);
+//                        JOptionPane.showMessageDialog(null, "LR = "+Trainer.getInstance().getPerceptron().getLearningRate());
+                    }
                     try {
                         Trainer.getInstance().clearTrainingData();
                         linePanel1.clearPoints();
@@ -189,7 +209,7 @@ public class DivisoreFrame2 extends javax.swing.JFrame implements TrainingListen
                         for (int i = 0; i < 600; i++) {
                             int x = UtilsANN.generateRandomInRange(0, 700);
                             int y = UtilsANN.generateRandomInRange(0, 700);
-                            int lineY = (int)((5f / 7f) * (float)x + 200);
+                            int lineY = (int) ((5f / 7f) * (float) x + 200);
                             db.addDataset(new Dataset(new float[]{x, y, 1}, y > lineY ? 1 : -1));
 //                            db.addDataset(new Dataset(new float[]{x, y, 1}, y - ((5/7) *x) -200 > 0 ? 1 : -1));
 //                            db.addDataset(new Dataset(new float[]{x, y}, x-y > 0 ? 1 : -1));
@@ -198,7 +218,7 @@ public class DivisoreFrame2 extends javax.swing.JFrame implements TrainingListen
                         Trainer.getInstance().addTrainingData(db);
 
                         Trainer.getInstance().train();
-                        Thread.sleep(10);
+                        Thread.sleep(3);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(DivisoreFrame2.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -216,21 +236,21 @@ public class DivisoreFrame2 extends javax.swing.JFrame implements TrainingListen
         for (int i = 0; i < 1; i++) {
             int x = UtilsANN.generateRandomInRange(0, 700);
             int y = UtilsANN.generateRandomInRange(0, 700);
-            System.out.println("x = "+x);
-            System.out.println("y = "+y);
-            int lineY = (int)((5f / 7f) * (float)x + 200);
-            System.out.println("lineY = "+lineY);
-            this.linePanel1.drawPoint(x, y, y>lineY );
+            System.out.println("x = " + x);
+            System.out.println("y = " + y);
+            int lineY = (int) ((5f / 7f) * (float) x + 200);
+            System.out.println("lineY = " + lineY);
+            this.linePanel1.drawPoint(x, y, y > lineY);
             this.linePanel1.invalidate();
             this.linePanel1.repaint();
         }
-    
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
-/**
- * @param args the command line arguments
- */
-public static void main(String args[]) {
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -241,28 +261,24 @@ public static void main(String args[]) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                
 
-}
+                }
             }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(DivisoreFrame2.class
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-} catch (InstantiationException ex) {
+        } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(DivisoreFrame2.class
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-} catch (IllegalAccessException ex) {
+        } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(DivisoreFrame2.class
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(DivisoreFrame2.class
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -284,74 +300,101 @@ public static void main(String args[]) {
     // End of variables declaration//GEN-END:variables
 
     @Override
-        public void bucketDone(DataBucket bucket) {
-        if (wait > 0) {
-            wait--;
-            return;
-        } else {
-            wait = 20;
-        }
+    public void bucketDone(DataBucket bucket) {
+//        bucketCount++;
+//        System.out.println("bucket = "+bucketCount);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                synchronized (this) {
 
-        for (Dataset dataset : bucket.getDatasets()) {
-            float[] inputs = dataset.getInputs();
-            int x = (int) inputs[0];
-            int y = (int) inputs[1];
+                    if (wait > 0) {
+                        wait--;
+                        return;
+                    } else {
+                        wait = 40;
+                        bucketCount--;
+                        System.out.println("buckkake = " + bucketCount);
+                    }
 
-            this.linePanel1.drawPoint(x, y, dataset.getGivenAnswer() == 1);
+                    for (Dataset dataset : bucket.getDatasets()) {
+                        float[] inputs = dataset.getInputs();
+                        int x = (int) inputs[0];
+                        int y = (int) inputs[1];
 
-        }
-        this.linePanel1.revalidate();
-        this.linePanel1.repaint();
+                        linePanel1.drawPoint(x, y, dataset.getGivenAnswer() == 1);
 
-        int fails = 0;
-        for (Dataset dataset : bucket.getDatasets()) {
-            if (dataset.getError() != 0) {
-                fails++;
+                    }
+                    linePanel1.revalidate();
+                    linePanel1.repaint();
+
+                    int fails = 0;
+                    for (Dataset dataset : bucket.getDatasets()) {
+                        if (dataset.getError() != 0) {
+                            fails++;
+                        }
+                    }
+                    totFails += fails;
+//                    System.out.println("buckk =" + bucketCount);
+                    try {
+
+                        float mediaErrori = (float) totFails / 20f;
+                        System.out.println("media errori = "+mediaErrori);
+                        megaMedia += mediaErrori;
+                        if (bucketCount == 0) {
+                            System.out.println("ECCOMI");
+                            float value = megaMedia / 50;
+                            if(value < min){
+                                min = value;
+                            }
+                            s.setMinimumThreshold(min);
+                            TimeValueSupporterClass ds1 = new TimeValueSupporterClass(value, "SQM", new Date(megaStep));
+                            System.out.println(" ---------------------->>>>> MEDIA ERRORI: " + mediaErrori);
+                            panel.addLinearData("Media Errori", ds1, false);
+                            totFails = 0;
+                            bucketCount = 50;
+                            megaStep += 200;
+                            megaMedia = 0f;
+                        }
+
+                        TimeValueSupporterClass ds2 = new TimeValueSupporterClass(fails, "#", new Date(step));
+                        panel.addLinearData("Numero Fails", ds2, false);
+
+                        step += 10;
+
+                        panel.invalidate();
+                        panel.repaint();
+
+                    } catch (TypeDataMismatchException ex) {
+                        Logger.getLogger(QuadranteTester.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-        }
-
-        System.out.println(" ---------------------->>>>> ERRORE: " + bucket.getErrorDeviationStandard());
-        try {
-            TimeValueSupporterClass ds1 = new TimeValueSupporterClass(bucket.getErrorDeviationStandard(), "SQM", new Date(this.step));
-            panel.addLinearData("Deviazione Standard", ds1, false);
-
-            TimeValueSupporterClass ds2 = new TimeValueSupporterClass(fails, "#", new Date(this.step));
-            panel.addLinearData("Numero Fails", ds2, false);
-
-            step += 5;
-
-            panel.invalidate();
-            panel.repaint();
-        
-
-} catch (TypeDataMismatchException ex) {
-            Logger.getLogger(QuadranteTester.class
-.getName()).log(Level.SEVERE, null, ex);
-        }
+        });
 
     }
 
     @Override
-        public void currentDate(Date date) {
+    public void currentDate(Date date) {
     }
 
     @Override
-        public void currentValue(Object o) {
+    public void currentValue(Object o) {
     }
 
     @Override
-        public void showTooltip(String string, int i, int i1) {
+    public void showTooltip(String string, int i, int i1) {
     }
 
     @Override
-        public void forceFromTo(boolean bln) {
+    public void forceFromTo(boolean bln) {
     }
 
     @Override
-        public void rightClickTriggered(String string, Date date, int i, int i1) {
+    public void rightClickTriggered(String string, Date date, int i, int i1) {
     }
 
     @Override
-        public void rightClickAreaTriggered(String string, ICVAnnotation icva, Date date, int i, int i1) {
+    public void rightClickAreaTriggered(String string, ICVAnnotation icva, Date date, int i, int i1) {
     }
 }

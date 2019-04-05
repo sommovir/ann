@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.GroupLayout;
 
 /**
@@ -21,7 +22,7 @@ import javax.swing.GroupLayout;
  */
 public class LinePanel extends javax.swing.JPanel {
 
-    public List<PointTest> points = new ArrayList<>();
+    public List<PointTest> points = new CopyOnWriteArrayList<>();
     public PointTest startLinePoint;
     public PointTest endLinePoint;
 

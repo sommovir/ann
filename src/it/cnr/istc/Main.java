@@ -20,6 +20,8 @@ public class Main {
     public static void main(String[] args) {
         try {
             System.out.println("PERCEPTRON TEST");
+ 
+//            System.out.println("Y = "+y);
             
             PerceptronTEST p = new PerceptronTEST(3);
             p.setInputs(0.2f, 0.3f, 0.9f);

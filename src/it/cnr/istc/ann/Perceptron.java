@@ -18,7 +18,7 @@ public class Perceptron  {
     private float[] inputs;
     private float[] weights;
 //    private float bias = 1;//ThreadLocalRandom.current().nextFloat();
-    private float learningRate = 0.25f; //adjustment speed
+    private float learningRate = 0.45f; //adjustment speed
     private float potential = 0f;
     private int lastActivationResult;
 
@@ -43,6 +43,22 @@ public class Perceptron  {
         setInputs(ins);
         return activate();
     }
+
+    public void setLearningRate(float learningRate) {
+        this.learningRate = learningRate;
+    }
+    
+    public void decreaseLearningRate(float amount){
+        this.learningRate-=amount;
+        System.out.println("LE: "+this.learningRate);
+    }
+
+    public float getLearningRate() {
+        return learningRate;
+    }
+    
+    
+    
     
     public void train(Dataset dataset){
         this.inputs = dataset.getInputs();
