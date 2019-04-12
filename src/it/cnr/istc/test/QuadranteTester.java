@@ -280,7 +280,7 @@ public class QuadranteTester extends javax.swing.JFrame implements CoordinateLis
     }
 
     @Override
-    public void bucketDone(DataBucket bucket) {
+    public void bucketDone(DataBucket bucket, boolean descent) {
         System.out.println(" ---------------------->>>>> ERRORE: "+bucket.getErrorDeviationStandard());
         try {
             TimeValueSupporterClass ds1 = new TimeValueSupporterClass(bucket.getErrorDeviationStandard(), "SQM", new Date(this.step));

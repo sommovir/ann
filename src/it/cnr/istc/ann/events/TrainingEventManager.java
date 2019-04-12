@@ -35,9 +35,9 @@ public class TrainingEventManager {
         this.listeners.add(listener);
     }
     
-    public void bucketDone(DataBucket bucket){
+    public void bucketDone(DataBucket bucket, boolean descent){
         for (TrainingListener listener : listeners) {
-            listener.bucketDone(bucket);
+            listener.bucketDone(bucket, descent);
         }
     }
     

@@ -238,8 +238,13 @@ public class DivisoreFrame extends javax.swing.JFrame implements TrainingListene
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void bucketDone(DataBucket bucket) {
+    public void bucketDone(DataBucket bucket, boolean descent) {
 
+        if(descent){
+            return;
+        }
+        
+        
         for (Dataset dataset : bucket.getDatasets()) {
             float[] inputs = dataset.getInputs();
             int x = (int) inputs[0];

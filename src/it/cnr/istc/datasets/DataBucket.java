@@ -7,6 +7,7 @@ package it.cnr.istc.datasets;
 
 import it.cnr.istc.UtilsANN;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,9 +18,11 @@ public class DataBucket {
     
     private int size;
     private List<Dataset> datasets;
+    private int packSize = 50;
+    private int globalIteration = 3;
 
     public DataBucket(int size) {
-        this.size = size;
+        this.packSize = size;
         this.datasets = new ArrayList<>();
     }
     
@@ -39,6 +42,27 @@ public class DataBucket {
 
     public List<Dataset> getDatasets() {
         return datasets;
+    }
+
+    public int getPackSize() {
+        return packSize;
+    }
+
+    public void setPackSize(int packSize) {
+        this.packSize = packSize;
+    }
+    
+    
+    public void shuffle(){
+        Collections.shuffle(datasets);
+    }
+
+    public void setGlobalIteration(int globalIteration) {
+        this.globalIteration = globalIteration;
+    }
+
+    public int getGlobalIteration() {
+        return globalIteration;
     }
     
     

@@ -38,6 +38,12 @@ public class Perceptron  {
             inputs[i] = ins[i];
         }
     }
+
+    public float[] getWeights() {
+        return weights;
+    }
+    
+    
     
     public int test(float...ins) throws Exception{
         setInputs(ins);
@@ -49,6 +55,9 @@ public class Perceptron  {
     }
     
     public void decreaseLearningRate(float amount){
+        if(this.learningRate-amount < 0){
+            return;
+        }
         this.learningRate-=amount;
         System.out.println("LE: "+this.learningRate);
     }
@@ -56,8 +65,6 @@ public class Perceptron  {
     public float getLearningRate() {
         return learningRate;
     }
-    
-    
     
     
     public void train(Dataset dataset){
@@ -71,9 +78,9 @@ public class Perceptron  {
              weights[i] +=  (error * inputs[i] * this.learningRate);
         }
 //        System.out.print("\t\t-- weights: ");
-        for (float w : weights) {
+//        for (float w : weights) {
 //            System.out.print(w+", ");
-        }
+//        }
 //        System.out.println("");
     }
     

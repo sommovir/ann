@@ -11,6 +11,7 @@ import it.cnr.istc.datasets.Dataset;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.beans.Beans;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -66,7 +67,7 @@ public class LinePanel extends javax.swing.JPanel {
 
         if (this.endLinePoint.getX() == -1) {
             g2d.drawLine(startLinePoint.getX(), startLinePoint.getY(), this.getWidth(), this.getHeight());
-        }else{
+        } else {
             g2d.drawLine(startLinePoint.getX(), startLinePoint.getY(), endLinePoint.getX(), endLinePoint.getY());
         }
 
@@ -79,13 +80,14 @@ public class LinePanel extends javax.swing.JPanel {
             }
             g2d.fillOval(point.getX() - 4, point.getY() - 4, 8, 8);
         }
-        
-        g2d.setPaint(new Color(0,0,255));
-        int bohx = (int)Trainer.getInstance().getPerceptron().guessY(0);
+
+        g2d.setPaint(new Color(0, 0, 255));
+//        int bohx = (int)Trainer.getInstance().getPerceptron().guessY(0);
 //        System.out.println("BOHX = "+bohx);
-        g2d.drawLine(1, (int)Trainer.getInstance().getPerceptron().guessY(1), 700, (int)Trainer.getInstance().getPerceptron().guessY(700));
-        
-        
+        if (!Beans.isDesignTime()) {
+            g2d.drawLine(1, (int) Trainer.getInstance().getPerceptron().guessY(1), 700, (int) Trainer.getInstance().getPerceptron().guessY(700));
+        }
+
     }
 
     public void drawPoint(int x, int y, boolean ok) {

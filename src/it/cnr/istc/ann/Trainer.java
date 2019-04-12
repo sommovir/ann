@@ -34,9 +34,11 @@ public class Trainer {
 
     private List<DataBucket> trainingData = new ArrayList<>();
     private Perceptron perceptron = null;
+    private PerceptronDescent perceptronDescent = null;
 
     public void init(int inputSize) {
         this.perceptron = new Perceptron(inputSize);
+        this.perceptronDescent = new PerceptronDescent(inputSize);
     }
 
     public void clearTrainingData() {
@@ -48,15 +50,25 @@ public class Trainer {
     }
 
     public void train() {
-        for (DataBucket dataBucket : trainingData) {
+            for (DataBucket dataBucket : trainingData) {
 //            System.out.println("DATA BUCKET SIZE = " + dataBucket.getDatasets().size());
-            for (Dataset dataset : dataBucket.getDatasets()) {
-                this.perceptron.train(dataset);
+                for (Dataset dataset : dataBucket.getDatasets()) {
+                    this.perceptron.train(dataset);
+                }
+                TrainingEventManager.getInstance().bucketDone(dataBucket,false);
             }
-            TrainingEventManager.getInstance().bucketDone(dataBucket);
-        }
 
     }
+    
+    
+    
+    
+
+    public PerceptronDescent getPerceptronDescent() {
+        return perceptronDescent;
+    }
+    
+    
 
     public Perceptron getPerceptron() {
         return perceptron;

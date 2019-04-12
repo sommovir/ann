@@ -13,6 +13,6 @@ import it.cnr.istc.datasets.DataBucket;
  */
 public interface TrainingListener {
     
-    public void bucketDone(DataBucket bucket);
+    public void bucketDone(DataBucket bucket, boolean descent);
     
 }
