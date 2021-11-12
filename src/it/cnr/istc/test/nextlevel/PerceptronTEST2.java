@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.cnr.istc;
+package it.cnr.istc.test.nextlevel;
 
+import it.cnr.istc.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -13,16 +14,16 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Luca Coraci <luca.coraci@istc.cnr.it> ISTC-CNR
  */
-public class PerceptronTEST {
+public class PerceptronTEST2 {
 
     private Float[] inputs;
     private Float[] weights;
     private float bias = ThreadLocalRandom.current().nextFloat();
     private float sigma = 0.5f; //adjustment speed
     private float potential = 0f;
-    private boolean memoryForNullInputs = false;
+    private int memoryForNullInputs = 1;
 
-    public PerceptronTEST(int input_size) {
+    public PerceptronTEST2(int input_size) {
         this.inputs = new Float[input_size];
         this.weights = new Float[input_size];
         for (int i = 0; i < weights.length; i++) {
@@ -31,7 +32,7 @@ public class PerceptronTEST {
         }
     }
 
-    public void setInputs(Float... ins) throws Exception {
+    public void setInputs(float... ins) throws Exception {
         if (ins.length != inputs.length) {
             throw new Exception("Lenghts Mismatch!");
         }
@@ -61,7 +62,7 @@ public class PerceptronTEST {
 //        return (float) (1f/(1f+ Math.exp(-sum)));
 //        
 //    }
-    public boolean activate() {
+    public int activate() {
         
         if(isNullInput()){
             return this.memoryForNullInputs;
@@ -77,18 +78,32 @@ public class PerceptronTEST {
 //        sum = 0.2f;
 //        float result = (float) (1f/(1f+ Math.exp(-sum)));
         this.potential = potenzialeAttivazione;
-        return potenzialeAttivazione >= 0;
+        if(potenzialeAttivazione <= 0.4){
+            return 1;
+        }else if(potenzialeAttivazione > 0.4 && potenzialeAttivazione <=0.7){
+            return 2;
+        }else{
+            return 3;
+        }
 
     }
 
-    public void adjust(boolean correctValue) {
+    public void adjust(int correctValue) {
         
         if(isNullInput()){
             this.memoryForNullInputs = correctValue;
         }
         
-        int givenAnswer = this.potential >= 0 ? 1 : 0; //A
-        int correctAnswer = correctValue ? 1 : 0;      //A'
+         int givenAnswer =0; //A
+        if(potential <= 0.4){
+            givenAnswer =  1;
+        }else if(potential > 0.4 && potential <=0.7){
+            givenAnswer=  2;
+        }else{
+            givenAnswer =  3;
+        }
+
+        int correctAnswer = correctValue;      //A'
 
         System.out.println("OLD CONFIG: " + inputs[0] + "  " + inputs[1] + "  " + inputs[2] + "  -----  " + weights[0] + " " + weights[1] + " " + weights[2] + " -------> " + this.potential);
 

@@ -10,7 +10,7 @@ package it.cnr.istc.datasets;
  * @author Luca Coraci <luca.coraci@istc.cnr.it> ISTC-CNR
  */
 public class Dataset {
-    
+
     private float[] inputs;
     private int desiredAnswer;
     private int givenAnswer = 0;
@@ -43,15 +43,19 @@ public class Dataset {
     public int getGivenAnswer() {
         return givenAnswer;
     }
-    
-    public int getError(){
+
+    public int getError() {
         return this.desiredAnswer - this.givenAnswer;
     }
-    
-    
-    
-    
-    
-    
-    
+
+    @Override
+    public String toString() {
+        String r = "value={";
+        for (int i = 0; i < inputs.length-1; i++) {
+            r+=inputs[i]+", ";
+        }
+        r+=inputs[inputs.length-1]+"}";
+        return r;
+    }
+
 }

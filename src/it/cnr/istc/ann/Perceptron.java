@@ -84,7 +84,7 @@ public class Perceptron  {
 //        System.out.println("");
     }
     
-    public int sign(float x){
+public int sign(float x){
         return x >= 0 ? 1 : -1;
     }
 

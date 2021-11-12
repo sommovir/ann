@@ -4,6 +4,7 @@
  */
 package it.cnr.istc.test.nextlevel;
 
+import it.cnr.istc.PerceptronTEST;
 import it.cnr.istc.UtilsANN;
 import it.cnr.istc.ann.Trainer;
 import it.cnr.istc.ann.events.TrainingEventManager;
@@ -21,16 +22,34 @@ import java.util.logging.Logger;
  *
  * @author Luca
  */
-public class NextLevelTrainer extends javax.swing.JFrame implements TrainingListener {
+public class NextLevelTrainer2 extends javax.swing.JFrame implements TrainingListener {
 
-    int totFails = 0;
+    PerceptronTEST2 perceptron = new PerceptronTEST2(10);
+    int currentNextLevel = 1;
 
     /**
      * Creates new form NextLevelTrainer
      */
-    public NextLevelTrainer() {
+    public NextLevelTrainer2() {
         initComponents();
-        TrainingEventManager.getInstance().addTrainingListener(this);
+        try {
+            DataBucket generateDataset = generateDataset();
+            for (Dataset dataset : generateDataset.getDatasets()) {
+
+                perceptron.setInputs(dataset.getInputs());
+                currentNextLevel = perceptron.activate();
+                if (currentNextLevel == dataset.getDesiredAnswer()) {
+                    this.jLabel_response.setText("VALID");
+                } else {
+                    this.jLabel_response.setText("INVALID");
+                    perceptron.adjust(dataset.getDesiredAnswer());
+                    
+                }
+
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(NextLevelTrainer2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }
 
     private DataBucket generateDataset() {
@@ -276,7 +295,8 @@ public class NextLevelTrainer extends javax.swing.JFrame implements TrainingList
         String text = this.jTextField1.getText();
         try {
             float[] translateInput = this.translateInput(text);
-            int value = Trainer.getInstance().getPerceptron().test(translateInput);
+            this.perceptron.setInputs(translateInput);
+            int value = this.perceptron.activate();
             this.jLabel_response.setText("" + value);
 //        try {
 //            int value = Trainer.getInstance().getPerceptron().test(new float[]{Level.EASY.getWeight(),Level.EASY.getWeight(),Level.EASY.getWeight(),Level.EASY.getWeight(),Level.EASY.getWeight(),0f,0f,0f,0f,0f});
@@ -286,7 +306,7 @@ public class NextLevelTrainer extends javax.swing.JFrame implements TrainingList
 //            Logger.getLogger(NextLevelTrainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 //        }
         } catch (Exception ex) {
-            Logger.getLogger(NextLevelTrainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Logger.getLogger(NextLevelTrainer2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -307,20 +327,21 @@ public class NextLevelTrainer extends javax.swing.JFrame implements TrainingList
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NextLevelTrainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NextLevelTrainer2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NextLevelTrainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NextLevelTrainer2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NextLevelTrainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NextLevelTrainer2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NextLevelTrainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NextLevelTrainer2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NextLevelTrainer().setVisible(true);
+                new NextLevelTrainer2().setVisible(true);
             }
         });
     }
@@ -348,7 +369,6 @@ public class NextLevelTrainer extends javax.swing.JFrame implements TrainingList
     @Override
     public void bucketDone(DataBucket bucket, boolean descent) {
 
-        
         float errorDeviationStandard = bucket.getErrorDeviationStandard();
         System.out.println("errore: " + errorDeviationStandard);
         for (Dataset dataset : bucket.getDatasets()) {
